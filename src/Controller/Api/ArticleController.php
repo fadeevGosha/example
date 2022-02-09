@@ -20,6 +20,7 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class ArticleController extends AbstractController
 {
+    public const VOTE_TYPE_UP = 'up';
     /**
      * @var IArticleContentProvider
      */
@@ -60,7 +61,7 @@ class ArticleController extends AbstractController
      */
     public function vote(Article $article, string $type, LoggerInterface $logger, EntityManagerInterface $entityManager): Response
     {
-        if ($type === 'up') {
+        if ($type === static::VOTE_TYPE_UP) {
             $article->voteUp();
         } else {
             $article->voteDown();
