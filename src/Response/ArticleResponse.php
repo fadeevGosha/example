@@ -22,10 +22,10 @@ class ArticleResponse extends Response
      * @SWG\Property(type="object", ref=@Model(type=ArticleModel::class, groups={"swagger"}))
      * @Groups({"swagger"})
      */
-    public ?ArticleModel $article;
+    public ArticleModel $article;
 
     public function __construct(Article $article)
     {
-        $this->article = $article ? new ArticleModel($article) : null;
+        $this->article = new ArticleModel($article);
     }
 }

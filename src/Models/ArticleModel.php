@@ -19,13 +19,13 @@ use OpenApi\Annotations as SWG;
 class ArticleModel implements \JsonSerializable
 {
     /**
-     * @SWG\Property()
+     * @SWG\Property("integer")
      * @Groups({"swagger"})
      */
     public ?int $id;
 
     /**
-     * @SWG\Property()
+     * @SWG\Property("string")
      * @Groups({"swagger"})
      */
     public ?string $title;
