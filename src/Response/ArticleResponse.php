@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Responses;
+namespace App\Response;
 
 use App\Entity\Article;
 use App\Response\Response;
