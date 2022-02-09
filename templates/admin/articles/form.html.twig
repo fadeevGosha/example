@@ -1,0 +1,12 @@
+{{ form_start(articleForm) }}
+                            {{ form_row(articleForm.image, {label: 'Изображение статьи',
+                                attr: {placeholder: 'Выберите изображение'}
+                            }) }}
+                            {{ form_row(articleForm.title, {label: 'Заголовок статьи'}) }}
+                            {{ form_row(articleForm.body, {label: 'Тело статьи'}) }}
+                            {% if articleForm.publishedAt is defined  %}
+                                {{ form_row(articleForm.publishedAt, {label: 'Дата публикации статьи'}) }}
+                            {% endif %}
+                            {{ form_row(articleForm.author, {name: 'author', label: 'Автор статьи'}) }}
+<button type="submit" class="btn btn-primary">{{ button_text }}</button>
+{{ form_end(articleForm) }}

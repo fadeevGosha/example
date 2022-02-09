@@ -1,0 +1,73 @@
+{% extends 'base_conent.html.twig' %}
+
+{% block title %} {{ article.title }} - Spill-Coffee-On-The-Keyboard {% endblock %}
+{% block head %}
+    {% if  article.keywords  %}
+        <meta name="Keywords" content="{{ article.keywords }}">
+    {% endif  %}
+    {{ parent() }}
+{% endblock %}
+
+{% block content_row_class %} no-gutters featured-border{% endblock %}
+{% block content_col_class %} article-detail{% endblock %}
+
+{% block content %}
+    <div class="col-sm-12 p-2">
+        <div class="media d-flex align-content-center">
+            <img class="article-detail-image align-self-start mr-3 rounded" src="{{ uploaded_asset('article_uploads', article.image) }}" href="{{ path('app_homepage') }}">
+            <div class="media-body d-inline-block align-self-center">
+                <h1 class="mb-2">{{ article.title | raw}}</h1>
+                <div class="d-flex mb-2">
+                    <div class="text-muted align-self-center">
+                        <img class="article-author-img rounded-circle mr-2" src="{{ article.author.urlAvatar }}">
+                        {{ article.author.firstName }}
+                    </div>
+                    <div class="text-muted align-self-center ml-4"><i class="fas fa-clock size-is-"></i>
+                        {{ article.publishedAt ? article.publishedAt|ago : 'Неопубликована' }}
+                    </div>
+                </div>
+                {% include 'partial/article_tags.html.twig' with {tags: article.tags} %}
+                <div class="mb-2">
+                    <div class="text-muted align-self-center article-detail-arrows">
+                        <span data-item="voteCount" {% if article.voteCount != 0 %}class="{{ article.voteCount > 0 ? "text-success" : "text-danger" }}{% endif %}">{{ article.voteCount }}</span>
+                        <button class="btn btn-success ml-3" data-item="votesButton" data-url="{{ path('vote', {'slug': article.slug, 'type' : 'up'}) }}"><i class="fas fa-arrow-up"></i></button>
+                        <button class="btn btn-danger" data-item="votesButton" data-url="{{ path('vote', {'slug': article.slug, 'type' : 'down'}) }}"><i class="fas fa-arrow-down"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 mt-2 mb-4">
+        <p>{{ article.body|cached_markdown }}</p>
+    </div>
+    <div class="col-sm-12 mb-4">
+        <h3><i class="pr-3 far fa-comment text-secondary"></i>{{ article.nonDeletedComments|length }} Комментария</h3>
+        <hr>
+        <div class="row mb-4">
+            <div class="col-sm-12">
+                <div class="comment-container align-self-start col-sm-6">
+                    <div class="form-group">
+                        <textarea class="form-control" rows="2"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Комментировать</button>
+                </div>
+            </div>
+        </div>
+
+        {% for comment in article.nonDeletedComments %}
+            <div class="row mt-2">
+                <div class="col-sm-12">
+                    <div class="media">
+                        <img class="align-self-start comment-img rounded-circle" src="{{ asset('images/profile.png') }}">
+                        <div class="media-body align-self-start col-sm-6">
+                            <b>{{ comment.authorName }}</b>
+                            <small>{{ comment.createdAt|ago }} {% if comment.deletedAt %}DELETED{% endif %}</small>
+                            <br>
+                            <span class="comment">{{ comment.content }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} Создание статьи {% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="row">
+            {%if showError %}
+                <div class="col-12">
+                    <div class="alert alert-danger" role="alert">
+                        Не удалось создать статью
+                    </div>
+                </div>
+            {% endif %}
+            <div class="col-12">
+                <div class="border flex-md-row mb-4 shadow-sm bg-white p-4">
+                    <h1>Создание статьи</h1>
+                    {% include 'admin/articles/form.html.twig' with {button_text: 'Создать'}  %}
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+{% endblock %}
+

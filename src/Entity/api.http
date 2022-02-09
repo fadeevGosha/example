@@ -1,0 +1,3 @@
+GET http://127.0.0.1:8000/api/user
+Accept: application/json
+Authorization: Bearer 26ab22fc1cdb945318feee7ed51241c32855780d

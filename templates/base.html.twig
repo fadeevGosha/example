@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    {% block head %}
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <link rel="icon" type="image/ico" sizes="16x16" href="{{ asset('images/favicon.ico') }}">
+        {% block stylesheet %}
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css"
+                  integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous"/>
+            {{ encore_entry_link_tags('app') }}
+        {% endblock %}
+        <title>{% block title %} Spill-Coffee-On-The-Keyboard {% endblock %}</title>
+        {% block nav %}
+            {% if is_granted('ROLE_PREVIOUS_ADMIN') %}
+                <div class="alert alert-warning">
+                    Имперсонализация включена.    <a  href="{{ path('app_homepage', {'_switch_user': '_exit'}) }}">Выйти</a>
+                </div>
+            {% endif %}
+            <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+                <div class="container py-2">
+                    <a class="navbar-brand" href="/"><i class="fas fa-coffee text-muted"></i>
+                        Spill-Coffee-On-The-Keyboard <i class="fas fa-keyboard text-muted"></i></a>
+                    <button class="navbar-toggler" type="button" data-toggle="collapse"
+                            data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                            aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="navbar-nav mr-auto">
+                            <li class="nav-item active">
+                                <a class="nav-link" href="{{ path('app_homepage') }}"><i class="fas fa-home"></i></a>
+                            </li>
+                        </ul>
+                        <ul class="navbar-nav my-2 my-lg-0">
+                            <li class="nav-item d-flex my-auto">
+                                {% if (is_granted('ROLE_USER')) %}
+                                    <a class="btn btn-outline-light my-2 my-sm-0 mr-2" href="{{ path('app_account') }}">Профиль</a>
+                                    <a class="btn btn-outline-light my-2 my-sm-0 mr-2" href="{{ path('app_logout') }}">Выйти</a>
+                                    {% if(is_granted('ROLE_ADMIN_ARTICLE')) %}
+                                        <a class="btn btn-outline-light my-2 my-sm-0 mr-2" href="{{ path('app_admin_articles_list') }}">Статьи</a>
+                                    {% endif %}
+                                    {% if(is_granted('ROLE_ADMIN_COMMENT')) %}
+                                        <a class="btn btn-outline-light my-2 my-sm-0 mr-2" href="{{ path('app_admin_comments') }}">Редактирование комментариев</a>
+                                    {% endif %}
+                                {% else %}
+                                    <a class="btn btn-outline-light my-2 my-sm-0 mr-2" href="{{ path('app_login') }}">Войти</a>
+                                    <a class="btn btn-outline-light my-2 my-sm-0" href="{{ path('app_user_registration') }}">Регистрация</a>
+                                {% endif %}
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        {% endblock %}
+    {% endblock %}
+</head>
+{% if app.session.flashBag.peek('flash_message')|length > 0 %}
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <div class="alert alert-success" role="alert">
+                {% for message in app.flashes('flash_message') %}
+                    <p>{{ message }}</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% block body %}
+    <body>
+    <div class="container">
+        <div class="row">
+
+            <div class="col-sm-12">
+                <div class="row">
+                    <div class="col-md-12 col-xl-8">
+                        {% for article in articles %}
+                            <div class="article-container mb-2">
+                                <div class="row no-gutters border flex-md-row p-3 mb-4 shadow-sm">
+                                    <div class="col-auto d-block">
+                                        <img class="article-img" src="{{ uploaded_asset('article_uploads', article.image) }}">
+                                    </div>
+                                    <a class="col px-4 d-flex flex-column article-item"
+                                       href="{{ path('app_article_view', {'slug': article.slug}) }}">
+                                        <h5 class="mb-2">{{ article.title }}</h5>
+                                        <div class="d-flex mb-2">
+                                            <div class="text-muted align-self-center"><img
+                                                        class="article-author-img rounded-circle"
+                                                        src="{{ article.author.urlAvatar }}"> {{ article.author.firstName }}
+                                            </div>
+                                            <div class="text-muted align-self-center ml-3"><i
+                                                        class="fas fa-clock size-is-"></i>{{ article.publishedAt ? article.publishedAt|ago : 'Неопубликована' }}
+                                            </div>
+                                        </div>
+                                        {% include 'partial/article_tags.html.twig' with {tags: article.tags} %}
+                                        <div class="mb-2 text-muted">
+                                            {{ article.body|u.truncate(400, '...')|cached_markdown }}
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="col-md-12 col-xl-4">
+                        <div class="text-center bg-primary text-white py-1 border border-bottom-0">
+                            <h4 class="mb-0">Последние комменты</h4>
+                        </div>
+                        <div class="quotes-container bg-white shadow-sm border border-top-0 pb-2 pt-2 px-5">
+                            <div class="border-bottom mb-3">
+                                <div class="h4 text-left"># Когда пролил кофе на клавиатуру</div>
+                                <p><i class="far fa-comment text-secondary"></i> "Очень жизненно, аж прослезился"
+                                    <br> — <a href="#">Василий ПиЭйчПи, Программист Ruby</a></p>
+                            </div>
+
+                            <div class="border-bottom mb-3">
+                                <div class="h4 text-left"># Facebook ест твои данные</div>
+                                <p><i class="far fa-comment text-secondary"></i> "Backend'еры плакали, кололись, но
+                                    продолжали верстать сайт"
+                                    <br> — <a href="#">Флекс Абсолютович, Верстак от бога</a></p>
+                            </div>
+
+
+                            <div>
+                                <div class="h4 text-left"># Что делать, если надо верстать?</div>
+                                <p><i class="far fa-comment text-secondary"></i> "Ой, я сайт перепутал"
+                                    <br> — <a href="#">Барон Сосискин, Дегустатор сосисок</a></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </body>
+{% endblock %}
+{% block footer %}
+    <footer class="footer bg-white">
+        <div class="container text-center">
+            <span class="text-muted"><b>Spill-Coffee-On-The-Keyboard</b> - учебный проект для домашнего задания по курсу Symfony</span>
+        </div>
+    </footer>
+{% endblock %}
+{% block javascripts %}
+    {{ encore_entry_script_tags('app') }}
+{% endblock %}
+</html>
